@@ -1,38 +1,50 @@
-/* Projeto didático usando lingaugem C
-   Elaborado por Vito Hugo Miranda em 24/09/2026 */
+//cabeçalho
+//includes
+//defines
+//pragma
+//identificação das variáveis
+//protótipo da função
+//main
+//void
 
-#include <stdio.h>
-#include <pic18f4520.h>
+/* Projeto didático utilizando o uc PIC 18f4520 Microchip
+   Vitor Hugo Miranda
+   ADS Noturno 3°Semestre */
 
-#define freqCristal 4000000
-#define led PORTDbits.RD0
-#define botao PORTBbits.RB0
-#define HIGH 1
-#define LOW 0
-#define aquecedor PORTDbits.RD0
+#include<xc.h>
+#include<pic18f4520.h>
+
+#define_XTAL_FREQ 4000000 // frequencia do oscilador cristal = 4MHz
+#define LED PORTDbits.RD0
 
 #pragma config OSC = HS
 #pragma config WDT = OFF
 
-//Definição de variáveis
+//declaração de variáveis
+unsigned char x;
 
-unsigned char x, dezena, tb, unidade, apontador, valor_led, display;
-unsigned char num_bin, n, contagen, temp_dg_int;
-unsigned int y, temperatura_inteiro, roda, temp_int, temp_high;
-float z, temperatura_float, temp_float;
-unsigned char minuto_uni = 0, temperatura_display;
-unsigned char minuto_dez = 0, cont_seg, cont_min, cont_hora;
+//protótipo de função
+void tempo_50ms(void);
 
-//Protótipo de funções
-void Tempo50(void);
+// exercicío piscar LED em PORTD0 com f = 10Hz com timer0
+void main()
+{
+    TRISD = 0b00000000; //port D saída
 
-// Exercício: Piscar Led no timer 0
-
-int main(){
-    int rep = 100000;
-    while(rep > 0){
-        led = 1;
-        Tempo50();
-        led = 0;
+     while(1)
+    {
+        LED = 1;
+        tempo_50ms();
+        LED = 0;
+        tempo_50ms();
     }
+
 }
+
+ void tempo_50ms(void)
+    {
+        TMR0 = 61; // 256-(50000/256)
+        T0CON = 0b11000111;
+        INTCONbits.TMR0IF = 0;
+        while(TMR0IF == 0);
+    }
